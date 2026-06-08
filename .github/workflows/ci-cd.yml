@@ -54,6 +54,11 @@ jobs:
       - name: Run Unit Tests
         run: ./mvnw test
 
+      - name: Debug Sonar Config
+        run: |
+          echo "ORG=vprofile-actions8694"
+          echo "PROJECT=vprofile-actions8694_bankapp"  
+
       # 7. SonarQube Analysis & Quality Gate (SonarCloud)
       - name: Run SonarQube Analysis
         env:
