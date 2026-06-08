@@ -10,7 +10,7 @@ BankApp is a web application for managing bank accounts, built with Spring Boot,
 
 - Java 17 or higher
 - Maven 3.8+
-- MySQL 8.0+
+- MySQL 8.0
 
 ## Setup
 

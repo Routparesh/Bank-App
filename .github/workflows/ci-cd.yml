@@ -62,7 +62,7 @@ jobs:
           ./mvnw sonar:sonar \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.organization=vprofile-actions8694 \
-            -Dsonar.projectKey=vprofile-actions8694_Bank-App \
+            -Dsonar.projectKey=vprofile-actions8694_bankapp \
             -Dsonar.projectName="Bank App" \
             -Dsonar.qualitygate.wait=true
 
