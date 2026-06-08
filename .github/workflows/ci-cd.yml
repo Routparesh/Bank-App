@@ -2,9 +2,9 @@ name: Java CI/CD Pipeline with Security and K8s Deployment
 
 on:
   push:
-    branches: [ "master", "main" ]
+    branches: [ "master", "main", "start" ]
   pull_request:
-    branches: [ "master", "main" ]
+    branches: [ "master", "main", "start" ]
 
 env:
   # Replace with your Docker Hub username/repository
