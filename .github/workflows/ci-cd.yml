@@ -1,5 +1,8 @@
 name: Java CI/CD Pipeline with Security and K8s Deployment
 
+permissions:
+  contents: write
+
 on:
   push:
     branches: [ "master", "main", "start" ]
