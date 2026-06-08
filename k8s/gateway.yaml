@@ -2,12 +2,24 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
   name: bankapp-gateway
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   gatewayClassName: gateway-api-controller # Replace with your gateway class (e.g., istio, kong, cilium, etc.)
   listeners:
   - name: http
     protocol: HTTP
     port: 80
+    allowedRoutes:
+      namespaces:
+        from: Same
+  - name: https
+    protocol: HTTPS
+    port: 443
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - name: bankapp-tls-secret
     allowedRoutes:
       namespaces:
         from: Same
@@ -19,6 +31,8 @@ metadata:
 spec:
   parentRefs:
   - name: bankapp-gateway
+  hostnames:
+  - "bank.yourdomain.com" # Replace with your actual custom domain name
   rules:
   - matches:
     - path:
@@ -27,3 +41,4 @@ spec:
     backendRefs:
     - name: bankapp-service
       port: 8080
+

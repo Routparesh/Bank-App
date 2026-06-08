@@ -13,12 +13,17 @@ spec:
     metadata:
       labels:
         app: bankapp
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/actuator/prometheus"
+        prometheus.io/port: "8080"
     spec:
       containers:
       - name: bankapp
         image: docker.io/routparesh/bankapp:010c96b9910f1c5d6802b71d7de5db7f8dc1f259
         ports:
-        - containerPort: 8080
+        - name: http
+          containerPort: 8080
         env:
         - name: SPRING_DATASOURCE_URL
           value: "jdbc:mysql://bankappdb.ckzwyao0w2by.us-east-1.rds.amazonaws.com/bankappdb?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true"
@@ -41,7 +46,9 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-  - port: 80
+  - name: http
+    port: 80
     targetPort: 8080
   selector:
     app: bankapp
+

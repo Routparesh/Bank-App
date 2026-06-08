@@ -14,11 +14,16 @@ bootstrap:
 apply:
 	kubectl apply -f k8s/deployment.yaml -n $(NAMESPACE)
 	kubectl apply -f k8s/gateway.yaml -n $(NAMESPACE)
+	kubectl apply -f k8s/clusterissuer.yaml -n $(NAMESPACE)
+	kubectl apply -f k8s/servicemonitor.yaml -n $(NAMESPACE)
 	kubectl apply -f k8s/backup-cronjob.yaml -n $(NAMESPACE)
 	kubectl apply -f k8s/argocd-app.yaml -n $(NAMESPACE)
 
 destroy:
 	kubectl delete -f k8s/argocd-app.yaml -n $(NAMESPACE) --ignore-not-found
 	kubectl delete -f k8s/backup-cronjob.yaml -n $(NAMESPACE) --ignore-not-found
+	kubectl delete -f k8s/servicemonitor.yaml -n $(NAMESPACE) --ignore-not-found
+	kubectl delete -f k8s/clusterissuer.yaml -n $(NAMESPACE) --ignore-not-found
 	kubectl delete -f k8s/gateway.yaml -n $(NAMESPACE) --ignore-not-found
 	kubectl delete -f k8s/deployment.yaml -n $(NAMESPACE) --ignore-not-found
+
