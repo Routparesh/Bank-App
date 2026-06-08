@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: bankapp
-        image: docker.io/username/bankapp:latest
+        image: docker.io/routparesh/bankapp:010c96b9910f1c5d6802b71d7de5db7f8dc1f259
         ports:
         - containerPort: 8080
         env:
