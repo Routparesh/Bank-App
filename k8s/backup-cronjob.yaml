@@ -1,0 +1,59 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: mysql-s3-backup
+spec:
+  schedule: "0 0 * * *" # Runs every day at midnight
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 5
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          # If using IAM Roles for Service Accounts (IRSA), bind the serviceAccountName here
+          # serviceAccountName: backup-service-account
+          containers:
+          - name: backup-agent
+            image: alpine:3.18
+            command: ["/bin/sh", "-c"]
+            args:
+              - |
+                set -e
+                echo "Installing mysql-client and aws-cli..."
+                apk add --no-cache mysql-client aws-cli
+                
+                BACKUP_FILE="/tmp/backup_$(date +%F_%H-%M-%S).sql.gz"
+                
+                echo "Running database dump..."
+                mysqldump -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" --databases "$DB_NAME" | gzip > "$BACKUP_FILE"
+                
+                echo "Uploading backup to Amazon S3..."
+                aws s3 cp "$BACKUP_FILE" "s3://$S3_BUCKET_NAME/backups/$(basename $BACKUP_FILE)"
+                
+                echo "Backup successfully uploaded!"
+            env:
+            - name: DB_HOST
+              value: "bankappdb.ckzwyao0w2by.us-east-1.rds.amazonaws.com"
+            - name: DB_NAME
+              value: "bankappdb"
+            - name: DB_USER
+              value: "admin"
+            - name: DB_PASS
+              value: "admin123"
+            - name: S3_BUCKET_NAME
+              value: "your-bankapp-backups-bucket" # Replace with your S3 bucket name
+            # Optional: Configure static AWS credentials if not using IRSA
+            # - name: AWS_ACCESS_KEY_ID
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: aws-s3-credentials
+            #       key: aws-access-key-id
+            # - name: AWS_SECRET_ACCESS_KEY
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: aws-s3-credentials
+            #       key: aws-secret-access-key
+            # - name: AWS_DEFAULT_REGION
+            #   value: "us-east-1"
+          restartPolicy: OnFailure
