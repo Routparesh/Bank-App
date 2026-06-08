@@ -8,7 +8,7 @@ on:
 
 env:
   # Replace with your Docker Hub username/repository
-  IMAGE_NAME: username/bankapp
+  IMAGE_NAME: routparesh/bankapp
 
 jobs:
   build-and-deploy:
