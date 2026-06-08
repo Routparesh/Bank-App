@@ -54,7 +54,7 @@ jobs:
       - name: Run Unit Tests
         run: ./mvnw test
 
-      # 7. SonarQube Analysis (SonarCloud)
+      # 7. SonarQube Analysis & Quality Gate (SonarCloud)
       - name: Run SonarQube Analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -63,17 +63,8 @@ jobs:
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.organization=vprofile-actions8694 \
             -Dsonar.projectKey=vprofile-actions8694_bankapp \
-            -Dsonar.projectName="Bank App"
-
-      # 8. SonarQube Quality Gate Check
-      - name: Check SonarQube Quality Gate
-        uses: sonarsource/sonarqube-quality-gate-action@master
-        timeout-minutes: 5
-        with:
-          scanMetadataReportFile: target/sonar/report-task.txt
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: https://sonarcloud.io
+            -Dsonar.projectName="Bank App" \
+            -Dsonar.qualitygate.wait=true
 
       # 9. Checkov static analysis (Dockerfile / Kubernetes configs)
       - name: Run Checkov Security Scan
